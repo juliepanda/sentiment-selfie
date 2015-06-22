@@ -23,15 +23,6 @@
 			</div>
 			<canvas id="sketch" width="400" height="300"></canvas>
 			<div id="emoji"></div>
-			<div id="emotion_container">
-				<div id="emotion_icons">
-					<img class="emotion_icon" id="icon1" src="images/icon_angry.png">
-					<img class="emotion_icon" id="icon2" src="images/icon_sad.png">
-					<img class="emotion_icon" id="icon3" src="images/icon_surprised.png">
-					<img class="emotion_icon" id="icon4" src="images/icon_happy.png">
-				</div>
-				<div id='emotion_chart'></div>
-			</div>
 			<div id="controls">
 				<input class="btn" type="button" value="wait, loading video" disabled="disabled" onclick="startVideo()" id="startbutton"></input>
 				<input class="btn" type="button" value="Take Picture" onclick="takePicture()" id="takePicture"></input>
@@ -127,6 +118,7 @@
 				var ctrack = new clm.tracker({useWebGL : true});
 				ctrack.init(pModel);
 				var maxEmotion;
+				var emoji = document.getElementById('emoji');
 
 				function startVideo() {
 					// start video
@@ -137,6 +129,29 @@
 					drawLoop();
 				}
 				
+				function setImages(maxEmotion) {
+					switch (maxEmotion) {
+					    case 'happy':
+					    	console.log("happy");
+					     	emoji.innerHTML = '<img src="images/icon_happy.png" width="60">';
+					      break;
+					    case 'sad':
+					       console.log("sad");
+					      emoji.innerHTML = '<img src="images/icon_sad.png" width="60">';
+					      break;
+					    case 'surprised':
+					   	  console.log("suprised");
+					      emoji.innerHTML = '<img src="images/icon_surprised.png" width="60">';
+					      break;
+					    case 'angry':
+					      console.log("angry");
+					      emoji.innerHTML = '<img src="images/icon_angry.png" width="60">';
+					      break;
+					    default:
+					      console.log(maxEmotion);
+					      break;
+					   }
+				}
 				function drawLoop() {
 					requestAnimFrame(drawLoop);
 					overlayCC.clearRect(0, 0, 400, 300);
@@ -152,29 +167,13 @@
 					     	if (item.value > maxVal) {
 					          maxEmotion = item.emotion;
 					          maxVal = item.value;
-					          console.log(maxEmotion);
+					         // console.log(maxEmotion);
+					         setImages(maxEmotion);
 					        }
 					    });
 					}
 				}
-				
-				switch (maxEmotion) {
-				    case 'happy':
-				     
-				      break;
-				    case 'sad':
-				      
-				      break;
-				    case 'surprised':
-				      
-				      break;
-				    case 'angry':
-				     
-				      break;
-				    default:
-				      
-				      break;
-				    }
+		
 
 				var ec = new emotionClassifier();
 				ec.init(emotionModel);
