@@ -190,27 +190,19 @@
 
                     var topLeftX = avoidPoints[0][0];
                     var topLeftY = avoidPoints[0][1];
-                    var bottomRightX = avoidPoints[0][0];
-                    var bottomRightY = avoidPoints[0][1];
-                    for (var i = 0; i < avoidPoints.length; i++) {
-                      if (topLeftX > avoidPoints[i][0] && topLeftY > avoidPoints[i][1]) {
-                        topLeftX = avoidPoints[i][0];
-                        topLeftY = avoidPoints[i][1];
-                      }
-                      if (bottomRightX < avoidPoints[i][0] && bottomRightY < avoidPoints[i][1]) {
-                        bottomRightX = avoidPoints[i][0];
-                        bottomRightY = avoidPoints[i][1];
-                      }
-                    }
+                    var bottomRightX = avoidPoints[13][0];
+                    var bottomRightY = avoidPoints[7][1];
 
                     var x = getRandomInt(0, stickerCanvas.width);
                     var y = getRandomInt(0, stickerCanvas.height);
 
                     while (inRange(x, topLeftX, bottomRightX) && inRange(y, bottomRightY, topLeftY)) {
-                      x = getRandomInt(0, stickerCanvas.width - 150);
-                      y = getRandomInt(0, stickerCanvas.height - 200);
+                      x = getRandomInt(0, stickerCanvas.width);
+                      y = getRandomInt(0, stickerCanvas.height);
                     }
 
+                    // console.log('tracked: ', topLeftX, topLeftY);
+                    // console.log('x and y: ', x, y);
 
                     ctx.drawImage(img, x, y, randomWidth, scaledHeightBasedOnWidth);
                   }
