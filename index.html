@@ -16,7 +16,8 @@
     <script src="js/emotion_classifier.js"></script>
     <script src="js/emotionmodel.js"></script>
     <script src="js/emojify.js"></script>
-
+    <div class="firstpage">
+    </div>
     <div id="content">
       <div id="container">
         <video id="videoel" width="400" height="300" preload="auto" loop>
@@ -34,11 +35,11 @@
 
       <div class="output">
         <img id="photo" alt="The screen capture will appear in this box.">
+         <a href="#" class="btn" id="btn-download" download="my-file-name.png">Download</a>
       </div>
-      <a href="#" class="button" id="btn-download" download="my-file-name.png">Download</a>
+     
 
       <script>
-
         var width = 400;
         var height = 300;
         var photo = document.getElementById('photo');;
@@ -214,37 +215,36 @@
                       ctx.clearRect(0, 0, stickerCanvas.width, stickerCanvas.height);
 
                       var images = imagePreloader(maxEmotion);
-                      for (var i = 0; i < images.length; i++) {
-                        drawStickerOnCanvas(images[i], avoidPoints);
-                      }
+                      if (maxEmotion !== "suprised") {
+                        for (var i = 0; i < images.length; i++) {
+                          drawStickerOnCanvas(images[i], avoidPoints);
+                        }
 
-                      switch (maxEmotion) {
-                        case 'happy':
-                        console.log("happy");
-                        emoji.innerHTML = ":) :) :)";
-                        //emoji.innerHTML = '<img src="images/icon_happy.png" width="60">';
-                        break;
-                        case 'sad':
-                        console.log("sad");
-                        emoji.innerHTML = ":( :() :(";
-                        //emoji.innerHTML = '<img src="images/icon_sad.png" width="60">';
-                        break;
-                        case 'surprised':
-                        console.log("suprised");
-                        emoji.innerHTML = '<img src="images/icon_surprised.png" width="60">';
-                        break;
-                        case 'angry':
-                        console.log("angry");
-                        emoji.innerHTML = '<img src="images/icon_angry.png" width="60">';
-                        break;
-                        default:
-                        
-                        break;
+                        switch (maxEmotion) {
+                          case 'happy':
+                          console.log("happy");
+                          emoji.innerHTML = ":) :) :)";
+                          //emoji.innerHTML = '<img src="images/icon_happy.png" width="60">';
+                          break;
+                          case 'sad':
+                          console.log("sad");
+                          emoji.innerHTML = ":( :( :(";
+                          //emoji.innerHTML = '<img src="images/icon_sad.png" width="60">';
+                          break;
+                          case 'angry':
+                          console.log("angry");
+                          emoji.innerHTML = ":( :( :(";
+                          emoji.innerHTML = '<img src="images/icon_angry.png" width="60">';
+                          break;
+                          default:
+                          
+                          break;
+                        }
+                        emojify.run(document.getElementById('emoji'));
+                        } else {
+                        // do nothing
                       }
-                      emojify.run(document.getElementById('emoji'));
-                      } else {
-                      // do nothing
-                    }
+                  }
                   }
 
                   function drawLoop() {
@@ -262,8 +262,9 @@
                         if (item.value > maxVal) {
                           maxEmotion = item.emotion;
                           maxVal = item.value;
-                          setImages(maxEmotion, prevEmotion, ctPositions);
-
+                          if (maxEmotion !== "suprised") {
+                              setImages(maxEmotion, prevEmotion, ctPositions);
+                           }
                           if (maxEmotion !== prevEmotion) {
                             // update prevEmotion
                             prevEmotion = maxEmotion;
@@ -277,7 +278,8 @@
                     var ec = new emotionClassifier();
                     ec.init(emotionModel);
                     var emotionData = ec.getBlank();
+
                   </script>
-                </div>
-              </body>
-            </html>
+        </div>
+    </body>
+</html>
