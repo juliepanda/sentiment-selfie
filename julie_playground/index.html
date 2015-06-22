@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>CLIENT SIDE JAVASCRIPT</title>
+  </head>
+  <body>
+
+    <script>
+      window.onload = function() {
+        function imagePreloader( imgType ) {
+          var images = [];
+          var fileCount;
+          for (var i = 0; i < 10; i++) {
+            fileCount = i + 1;
+            var imageObj = document.createElement('img');
+            imageObj.src = '/img/' + imgType + '/' + fileCount + '.png';
+            images.push(imageObj);
+          }
+          return images;
+        };
+
+        var src = document.getElementsByTagName('body');
+        var images = imagePreloader('happy'); // need to do for imgType anger and sad too
+        for (var i = 0; i < images.length; i++) {
+          src[0].appendChild(images[i]);
+        }
+      };
+    </script>
+  </body>
+</html>
+
+
+
+
+
