@@ -8,12 +8,42 @@
 
     <script>
       window.onload = function() {
+        var SAD_IMG_COUNT = 8,
+            HAPPY_IMG_COUNT = 11,
+            ANGER_IMG_COUNT = 10;
+
+        function getRandomInt(min, max) {
+          return Math.floor(Math.random() * (max - min)) + min;
+        };
+
         function imagePreloader( imgType ) {
+          /**
+            @function loads image files and returns array of image() 
+            @param {String} imgType - determines sentiment type of images being loaded
+           */
           var images = [];
           var fileCount;
-          for (var i = 0; i < 10; i++) {
+          var totalImgCount;
+          
+          // different counts of total img files for different type of img
+          switch (imgType) {
+            case 'sad':
+              totalImgCount = SAD_IMG_COUNT;
+              break;
+            case 'happy':
+              totalImgCount = HAPPY_IMG_COUNT;
+              break;
+            case 'anger':
+              totalImgCount = ANGER_IMG_COUNT;
+              break;
+            default:
+              totalImgCount = HAPPY_IMG_COUNT;
+          }
+
+          // loop through images available and load to Image() array
+          for (var i = 0; i < totalImgCount; i++) {
             fileCount = i + 1;
-            var imageObj = document.createElement('img');
+            var imageObj = new Image();
             imageObj.src = '/img/' + imgType + '/' + fileCount + '.png';
             images.push(imageObj);
           }
@@ -21,8 +51,10 @@
         };
 
         var src = document.getElementsByTagName('body');
-        var images = imagePreloader('happy'); // need to do for imgType anger and sad too
+        var images = imagePreloader('sad'); // need to do for imgType anger and sad too
+
         for (var i = 0; i < images.length; i++) {
+          images[i].width = getRandomInt(25, 150); // resize images; png auto-resizes based on either width or height input
           src[0].appendChild(images[i]);
         }
       };
