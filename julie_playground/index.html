@@ -60,22 +60,22 @@
           var ctx = canvas.getContext('2d');
 
           // randomized size and position
-          var randomWidth = getRandomInt(25, canvas.width/3);
+          var randomWidth = getRandomInt(50, canvas.width/3);
           var scaledHeightBasedOnWidth = img.height * (randomWidth/img.width);
           var x = getRandomInt(0, canvas.width - 150);
           var y = getRandomInt(0, canvas.height - 200);
+
           ctx.drawImage(img, x, y, randomWidth, scaledHeightBasedOnWidth);
         };
 
-        var images = imagePreloader('sad'); // need to do for imgType anger and sad too
-        for (var i = 0; i < images.length; i++) {
-          drawImageCanvas(images[i]);
-        }
-        /*var src = document.getElementsByTagName('body');
+        function mainDriver(imgType) {
+          var images = imagePreloader(imgType);
           for (var i = 0; i < images.length; i++) {
-          images[i].width = getRandomInt(25, 150); // resize images; png auto-resizes based on either width or height input
-          src[0].appendChild(images[i]);
-          }*/
+            drawImageCanvas(images[i]);
+          }
+        }
+
+        mainDriver('happy');
       };
     </script>
   </body>
