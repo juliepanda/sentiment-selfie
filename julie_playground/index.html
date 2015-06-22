@@ -5,6 +5,7 @@
     <title>CLIENT SIDE JAVASCRIPT</title>
   </head>
   <body>
+    <canvas id="canvas" height=460 width=600></canvas>
 
     <script>
       window.onload = function() {
@@ -24,7 +25,7 @@
           var images = [];
           var fileCount;
           var totalImgCount;
-          
+
           // different counts of total img files for different type of img
           switch (imgType) {
             case 'sad':
@@ -50,13 +51,31 @@
           return images;
         };
 
-        var src = document.getElementsByTagName('body');
-        var images = imagePreloader('sad'); // need to do for imgType anger and sad too
+        function drawImageCanvas(img) {
+          /*
+             draw image on canvas of random position and random size
+             @param img - image() to draw on canvas
+           */
+          var canvas = document.getElementById('canvas');
+          var ctx = canvas.getContext('2d');
 
+          // randomized size and position
+          var randomWidth = getRandomInt(25, canvas.width/3);
+          var scaledHeightBasedOnWidth = img.height * (randomWidth/img.width);
+          var x = getRandomInt(0, canvas.width - 150);
+          var y = getRandomInt(0, canvas.height - 200);
+          ctx.drawImage(img, x, y, randomWidth, scaledHeightBasedOnWidth);
+        };
+
+        var images = imagePreloader('sad'); // need to do for imgType anger and sad too
         for (var i = 0; i < images.length; i++) {
+          drawImageCanvas(images[i]);
+        }
+        /*var src = document.getElementsByTagName('body');
+          for (var i = 0; i < images.length; i++) {
           images[i].width = getRandomInt(25, 150); // resize images; png auto-resizes based on either width or height input
           src[0].appendChild(images[i]);
-        }
+          }*/
       };
     </script>
   </body>

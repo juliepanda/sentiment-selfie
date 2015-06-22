@@ -1,287 +1,287 @@
 
 <!doctype html>
 <html lang="en">
-	<head>
-		<title>Face tracker</title>
-		<meta charset="utf-8">
-	</head>
-	<body>
-		<link href="css/styles.css" rel="stylesheet" />
-		<script src="js/utils.js"></script>
-		<script src="js/clmtrackr.js"></script>
-		<script src="js/model_pca_20_svm_emotionDetection.js"></script>
-		<script src="js/Stats.js"></script>
-		<script src="js/d3.min.js"></script>
-		<script src="js/emotion_classifier.js"></script>
-		<script src="js/emotionmodel.js"></script>
+  <head>
+    <title>Face tracker</title>
+    <meta charset="utf-8">
+  </head>
+  <body>
+    <link href="css/styles.css" rel="stylesheet" />
+    <script src="js/utils.js"></script>
+    <script src="js/clmtrackr.js"></script>
+    <script src="js/model_pca_20_svm_emotionDetection.js"></script>
+    <script src="js/Stats.js"></script>
+    <script src="js/d3.min.js"></script>
+    <script src="js/emotion_classifier.js"></script>
+    <script src="js/emotionmodel.js"></script>
 
-		<div id="content">
-			<div id="container">
-				<video id="videoel" width="400" height="300" preload="auto" loop>
-				</video>
-				<canvas id="overlay" width="400" height="300"></canvas>
-			</div>
-			<canvas id="sketch" width="400" height="300"></canvas>
-			<div id="emoji"></div>
-			<div id="emotion_container">
-				<div id="emotion_icons">
-					<img class="emotion_icon" id="icon1" src="images/icon_angry.png">
-					<img class="emotion_icon" id="icon2" src="images/icon_sad.png">
-					<img class="emotion_icon" id="icon3" src="images/icon_surprised.png">
-					<img class="emotion_icon" id="icon4" src="images/icon_happy.png">
-				</div>
-				<div id='emotion_chart'></div>
-			</div>
-			<div id="controls">
-				<input class="btn" type="button" value="wait, loading video" disabled="disabled" onclick="startVideo()" id="startbutton"></input>
-				<input class="btn" type="button" value="Take Picture" onclick="takePicture()" id="takePicture"></input>
-			</div>
-			 <canvas id="canvas">
-			  </canvas>
-			  <div class="output">
-			    <img id="photo" alt="The screen capture will appear in this box.">
-			  </div>
-			  <a href="#" class="button" id="btn-download" download="my-file-name.png">Download</a>
+    <div id="content">
+      <div id="container">
+        <video id="videoel" width="400" height="300" preload="auto" loop>
+        </video>
+        <canvas id="overlay" width="400" height="300"></canvas>
+      </div>
+      <canvas id="sketch" width="400" height="300"></canvas>
+      <div id="emoji"></div>
+      <div id="emotion_container">
+        <div id="emotion_icons">
+          <img class="emotion_icon" id="icon1" src="images/icon_angry.png">
+          <img class="emotion_icon" id="icon2" src="images/icon_sad.png">
+          <img class="emotion_icon" id="icon3" src="images/icon_surprised.png">
+          <img class="emotion_icon" id="icon4" src="images/icon_happy.png">
+        </div>
+        <div id='emotion_chart'></div>
+      </div>
+      <div id="controls">
+        <input class="btn" type="button" value="wait, loading video" disabled="disabled" onclick="startVideo()" id="startbutton"></input>
+        <input class="btn" type="button" value="Take Picture" onclick="takePicture()" id="takePicture"></input>
+      </div>
+      <canvas id="canvas">
+      </canvas>
+      <div class="output">
+        <img id="photo" alt="The screen capture will appear in this box.">
+      </div>
+      <a href="#" class="button" id="btn-download" download="my-file-name.png">Download</a>
 
-			<script>
+      <script>
 
-			var width = 400;
-			var height = 300;
-			var photo = document.getElementById('photo');;
-			var canvas = document.getElementById('canvas');
-			var vid = document.getElementById('videoel');
-			var overlay = document.getElementById('overlay');
-			var overlayCC = overlay.getContext('2d');
+        var width = 400;
+        var height = 300;
+        var photo = document.getElementById('photo');;
+        var canvas = document.getElementById('canvas');
+        var vid = document.getElementById('videoel');
+        var overlay = document.getElementById('overlay');
+        var overlayCC = overlay.getContext('2d');
 
-				/** take picture **/
-				function takePicture() {
-					var context = canvas.getContext('2d');
-				    if (width && height) {
-				      canvas.width = 400;
-				      canvas.height = 300;
-				      context.drawImage(vid, 0, 0, 400, 300);
-				    
-				      var data = canvas.toDataURL('image/png');
-				      photo.setAttribute('src', data);
-				    } else {
-				      clearphoto();
-				    }
-				}
-				function clearphoto() {
-				    var context = canvas.getContext('2d');
-				    context.fillStyle = "#AAA";
-				    context.fillRect(0, 0, canvas.width, canvas.height);
+        /** take picture **/
+        function takePicture() {
+          var context = canvas.getContext('2d');
+          if (width && height) {
+            canvas.width = 400;
+            canvas.height = 300;
+            context.drawImage(vid, 0, 0, 400, 300);
 
-				    var data = canvas.toDataURL('image/png');
-				    photo.setAttribute('src', data);
-				  }
-	
-				var button = document.getElementById('btn-download');
-					button.addEventListener('click', function (e) {
-					    var dataURL = canvas.toDataURL('image/png');
-					    button.href = dataURL;
-				});
-				/********** check and set up video/webcam **********/
+            var data = canvas.toDataURL('image/png');
+            photo.setAttribute('src', data);
+          } else {
+            clearphoto();
+          }
+        }
+function clearphoto() {
+  var context = canvas.getContext('2d');
+  context.fillStyle = "#AAA";
+  context.fillRect(0, 0, canvas.width, canvas.height);
 
-				function enablestart() {
-					var startbutton = document.getElementById('startbutton');
-					startbutton.value = "start";
-					startbutton.disabled = null;
-				}
-				
-				navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
-				window.URL = window.URL || window.webkitURL || window.msURL || window.mozURL;
+  var data = canvas.toDataURL('image/png');
+  photo.setAttribute('src', data);
+}
 
-				// check for camerasupport
-				if (navigator.getUserMedia) {
-					// set up stream
-					
-					var videoSelector = {video : true};
-					if (window.navigator.appVersion.match(/Chrome\/(.*?) /)) {
-						var chromeVersion = parseInt(window.navigator.appVersion.match(/Chrome\/(\d+)\./)[1], 10);
-						if (chromeVersion < 20) {
-							videoSelector = "video";
-						}
-					};
-				
-					navigator.getUserMedia(videoSelector, function( stream ) {
-						if (vid.mozCaptureStream) {
-							vid.mozSrcObject = stream;
-						} else {
-							vid.src = (window.URL && window.URL.createObjectURL(stream)) || stream;
-						}
-						vid.play();
-					}, function() {
-						//insertAltVideo(vid);
-						alert("There was some problem trying to fetch video from your webcam. If you have a webcam, please make sure to accept when the browser asks for access to your webcam.");
-					});
-				} else {
-					//insertAltVideo(vid);
-					alert("This demo depends on getUserMedia, which your browser does not seem to support. :(");
-				}
+var button = document.getElementById('btn-download');
+button.addEventListener('click', function (e) {
+    var dataURL = canvas.toDataURL('image/png');
+    button.href = dataURL;
+    });
+/********** check and set up video/webcam **********/
 
-				vid.addEventListener('canplay', enablestart, false);
-				
-				/*********** setup of emotion detection *************/
+function enablestart() {
+  var startbutton = document.getElementById('startbutton');
+  startbutton.value = "start";
+  startbutton.disabled = null;
+}
 
-				var ctrack = new clm.tracker({useWebGL : true});
-				ctrack.init(pModel);
-				var maxEmotion;
+navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+window.URL = window.URL || window.webkitURL || window.msURL || window.mozURL;
 
-				function startVideo() {
-					// start video
-					vid.play();
-					// start tracking
-					ctrack.start(vid);
-					// start loop to draw face
-					drawLoop();
-				}
-				
-				function drawLoop() {
-					requestAnimFrame(drawLoop);
-					overlayCC.clearRect(0, 0, 400, 300);
-					//psrElement.innerHTML = "score :" + ctrack.getScore().toFixed(4);
-					if (ctrack.getCurrentPosition()) {
-						ctrack.draw(overlay);
-					}
-					var cp = ctrack.getCurrentParameters();
-					var er = ec.meanPredict(cp);
-					if (er) {
-						updateData(er);
-						for (var i = 0;i < er.length;i++) {
-							if (er[i].value > 0.4) {
-								document.getElementById('icon'+(i+1)).style.visibility = 'visible';
-							} else {
-								document.getElementById('icon'+(i+1)).style.visibility = 'hidden';
-							}
-						}
-					}
-					var maxVal = 0.5;
-					if (er.length > 0) {
-					    er.forEach(function (item) {
-					     	if (item.value > maxVal) {
-					          maxEmotion = item.emotion;
-					          maxVal = item.value;
-					          //console.log(maxEmotion);
-					        }
-					    });
-					}
-				}
-				
-				switch (curEmotion) {
-				    case 'happy':
-				     
-				      break;
-				    case 'sad':
-				      
-				      break;
-				    case 'surprised':
-				      
-				      break;
-				    case 'angry':
-				     
-				      break;
-				    default:
-				      
-				      break;
-				    }
+// check for camerasupport
+if (navigator.getUserMedia) {
+  // set up stream
 
-				var ec = new emotionClassifier();
-				ec.init(emotionModel);
-				var emotionData = ec.getBlank();
+  var videoSelector = {video : true};
+  if (window.navigator.appVersion.match(/Chrome\/(.*?) /)) {
+    var chromeVersion = parseInt(window.navigator.appVersion.match(/Chrome\/(\d+)\./)[1], 10);
+    if (chromeVersion < 20) {
+      videoSelector = "video";
+    }
+  };
 
-				/************ d3 code for barchart *****************/
+  navigator.getUserMedia(videoSelector, function( stream ) {
+      if (vid.mozCaptureStream) {
+      vid.mozSrcObject = stream;
+      } else {
+      vid.src = (window.URL && window.URL.createObjectURL(stream)) || stream;
+      }
+      vid.play();
+      }, function() {
+      //insertAltVideo(vid);
+      alert("There was some problem trying to fetch video from your webcam. If you have a webcam, please make sure to accept when the browser asks for access to your webcam.");
+      });
+} else {
+  //insertAltVideo(vid);
+  alert("This demo depends on getUserMedia, which your browser does not seem to support. :(");
+}
 
-				var margin = {top : 20, right : 20, bottom : 10, left : 40},
-					width = 400 - margin.left - margin.right,
-					height = 100 - margin.top - margin.bottom;
+vid.addEventListener('canplay', enablestart, false);
 
-				var barWidth = 30;
+/*********** setup of emotion detection *************/
 
-				var formatPercent = d3.format(".0%");
-				
-				var x = d3.scale.linear()
-					.domain([0, ec.getEmotions().length]).range([margin.left, width+margin.left]);
+var ctrack = new clm.tracker({useWebGL : true});
+ctrack.init(pModel);
+var maxEmotion;
 
-				var y = d3.scale.linear()
-					.domain([0,1]).range([0, height]);
+function startVideo() {
+  // start video
+  vid.play();
+  // start tracking
+  ctrack.start(vid);
+  // start loop to draw face
+  drawLoop();
+}
 
-				var svg = d3.select("#emotion_chart").append("svg")
-					.attr("width", width + margin.left + margin.right)
-					.attr("height", height + margin.top + margin.bottom)
-				
-				svg.selectAll("rect").
-				  data(emotionData).
-				  enter().
-				  append("svg:rect").
-				  attr("x", function(datum, index) { return x(index); }).
-				  attr("y", function(datum) { return height - y(datum.value); }).
-				  attr("height", function(datum) { return y(datum.value); }).
-				  attr("width", barWidth).
-				  attr("fill", "#2d578b");
+function drawLoop() {
+  requestAnimFrame(drawLoop);
+  overlayCC.clearRect(0, 0, 400, 300);
+  //psrElement.innerHTML = "score :" + ctrack.getScore().toFixed(4);
+  if (ctrack.getCurrentPosition()) {
+    ctrack.draw(overlay);
+  }
+  var cp = ctrack.getCurrentParameters();
+  var er = ec.meanPredict(cp);
+  if (er) {
+    updateData(er);
+    for (var i = 0;i < er.length;i++) {
+      if (er[i].value > 0.4) {
+        document.getElementById('icon'+(i+1)).style.visibility = 'visible';
+      } else {
+        document.getElementById('icon'+(i+1)).style.visibility = 'hidden';
+      }
+    }
+  }
+  var maxVal = 0.5;
+  if (er.length > 0) {
+    er.forEach(function (item) {
+        if (item.value > maxVal) {
+        maxEmotion = item.emotion;
+        maxVal = item.value;
+        //console.log(maxEmotion);
+        }
+        });
+  }
+}
 
-				svg.selectAll("text.labels").
-				  data(emotionData).
-				  enter().
-				  append("svg:text").
-				  attr("x", function(datum, index) { return x(index) + barWidth; }).
-				  attr("y", function(datum) { return height - y(datum.value); }).
-				  attr("dx", -barWidth/2).
-				  attr("dy", "1.2em").
-				  attr("text-anchor", "middle").
-				  text(function(datum) { return datum.value;}).
-				  attr("fill", "white").
-				  attr("class", "labels");
-				
-				svg.selectAll("text.yAxis").
-				  data(emotionData).
-				  enter().append("svg:text").
-				  attr("x", function(datum, index) { return x(index) + barWidth; }).
-				  attr("y", height).
-				  attr("dx", -barWidth/2).
-				  attr("text-anchor", "middle").
-				  attr("style", "font-size: 12").
-				  text(function(datum) { return datum.emotion;}).
-				  attr("transform", "translate(0, 18)").
-				  attr("class", "yAxis");
+switch (curEmotion) {
+  case 'happy':
 
-				function updateData(data) {
-					// update
-					var rects = svg.selectAll("rect")
-						.data(data)
-						.attr("y", function(datum) { return height - y(datum.value); })
-						.attr("height", function(datum) { return y(datum.value); });
-					var texts = svg.selectAll("text.labels")
-						.data(data)
-						.attr("y", function(datum) { return height - y(datum.value); })
-						.text(function(datum) { return datum.value.toFixed(1);});
+    break;
+  case 'sad':
 
-					// enter 
-					rects.enter().append("svg:rect");
-					texts.enter().append("svg:text");
+    break;
+  case 'surprised':
 
-					// exit
-					rects.exit().remove();
-					texts.exit().remove();
-				}
+    break;
+  case 'angry':
 
-				/******** stats ********/
+    break;
+  default:
 
-				stats = new Stats();
-				stats.domElement.style.position = 'absolute';
-				stats.domElement.style.top = '0px';
-				document.getElementById('container').appendChild( stats.domElement );
+    break;
+}
 
-				// update stats on every iteration
-				document.addEventListener('clmtrackrIteration', function(event) {
-					stats.update();
-				}, false);
+var ec = new emotionClassifier();
+ec.init(emotionModel);
+var emotionData = ec.getBlank();
+
+/************ d3 code for barchart *****************/
+
+var margin = {top : 20, right : 20, bottom : 10, left : 40},
+    width = 400 - margin.left - margin.right,
+    height = 100 - margin.top - margin.bottom;
+
+var barWidth = 30;
+
+var formatPercent = d3.format(".0%");
+
+var x = d3.scale.linear()
+  .domain([0, ec.getEmotions().length]).range([margin.left, width+margin.left]);
+
+var y = d3.scale.linear()
+  .domain([0,1]).range([0, height]);
+
+  var svg = d3.select("#emotion_chart").append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+
+  svg.selectAll("rect").
+  data(emotionData).
+  enter().
+  append("svg:rect").
+  attr("x", function(datum, index) { return x(index); }).
+  attr("y", function(datum) { return height - y(datum.value); }).
+  attr("height", function(datum) { return y(datum.value); }).
+  attr("width", barWidth).
+  attr("fill", "#2d578b");
+
+  svg.selectAll("text.labels").
+  data(emotionData).
+  enter().
+  append("svg:text").
+  attr("x", function(datum, index) { return x(index) + barWidth; }).
+  attr("y", function(datum) { return height - y(datum.value); }).
+  attr("dx", -barWidth/2).
+  attr("dy", "1.2em").
+  attr("text-anchor", "middle").
+  text(function(datum) { return datum.value;}).
+  attr("fill", "white").
+  attr("class", "labels");
+
+  svg.selectAll("text.yAxis").
+  data(emotionData).
+  enter().append("svg:text").
+  attr("x", function(datum, index) { return x(index) + barWidth; }).
+  attr("y", height).
+  attr("dx", -barWidth/2).
+  attr("text-anchor", "middle").
+  attr("style", "font-size: 12").
+  text(function(datum) { return datum.emotion;}).
+  attr("transform", "translate(0, 18)").
+  attr("class", "yAxis");
+
+  function updateData(data) {
+    // update
+    var rects = svg.selectAll("rect")
+      .data(data)
+      .attr("y", function(datum) { return height - y(datum.value); })
+      .attr("height", function(datum) { return y(datum.value); });
+    var texts = svg.selectAll("text.labels")
+      .data(data)
+      .attr("y", function(datum) { return height - y(datum.value); })
+      .text(function(datum) { return datum.value.toFixed(1);});
+
+    // enter 
+    rects.enter().append("svg:rect");
+    texts.enter().append("svg:text");
+
+    // exit
+    rects.exit().remove();
+    texts.exit().remove();
+  }
+
+/******** stats ********/
+
+stats = new Stats();
+stats.domElement.style.position = 'absolute';
+stats.domElement.style.top = '0px';
+document.getElementById('container').appendChild( stats.domElement );
+
+// update stats on every iteration
+document.addEventListener('clmtrackrIteration', function(event) {
+    stats.update();
+    }, false);
 
 
-				
 
-				
-			</script>
-		</div>
-	</body>
+
+
+      </script>
+    </div>
+  </body>
 </html>
