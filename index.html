@@ -163,6 +163,8 @@
                   ctrack.init(pModel);
                   var maxEmotion;
                   var emoji = document.getElementById('emoji');
+                  var stickerCanvas = document.getElementById('sticker');
+                  var ctx = stickerCanvas.getContext('2d');
 
                   function startVideo() {
                     // start video
@@ -174,8 +176,7 @@
                   }
 
                   function drawStickerOnCanvas(img) {
-                      var stickerCanvas = document.getElementById('sticker');
-                      var ctx = stickerCanvas.getContext('2d');
+                
 
                       var randomWidth = getRandomInt(50, stickerCanvas.width/3);
                       var scaledHeightBasedOnWidth = img.height * (randomWidth/img.width);
@@ -187,9 +188,8 @@
                   }
 
                   function setImages(maxEmotion, prevMaxEmotion) {
-                    // only update images if maxEmotion is different from previous
                     if (maxEmotion!==prevMaxEmotion) {
-
+                      ctx.clearRect(0, 0, stickerCanvas.width, stickerCanvas.height);
                       var images = imagePreloader(maxEmotion);
                       for (var i = 0; i < images.length; i++) {
                         drawStickerOnCanvas(images[i]);
