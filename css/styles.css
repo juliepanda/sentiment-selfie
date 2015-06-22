@@ -24,16 +24,21 @@
 			}
 			#sticker {
 				position: absolute;
-				top: 0px;
-				left: 0px;
+				top: 40px;
+				left: 370px;
 				-o-transform : scaleX(-1);
 				-webkit-transform : scaleX(-1);
 				transform : scaleX(-1);
 				-ms-filter : fliph; /*IE*/
 				filter : fliph; /*IE*/
-
 				width : 600px;
 				height : 450px;
+			}
+			.emoji {
+			    width: 1.5em;
+			    height: 1.5em;
+			    display: inline-block;
+			    margin-bottom: -0.25em;
 			}
 			#emoji{
 			        position:absolute;
