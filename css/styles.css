@@ -6,7 +6,7 @@
 				margin: 0px auto;
 				max-width: 1150px;
 			}
-			canvas {
+			#canvas {
 				display: none;
 			}
 			#overlay  {

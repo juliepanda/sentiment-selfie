@@ -21,7 +21,6 @@
         </video>
         <canvas id="overlay" width="400" height="300"></canvas>
       </div>
-      <canvas id="sketch" width="400" height="300"></canvas>
       <canvas id="sticker" width="400" height="300"></canvas>
       <div id="emoji"></div>
       <div id="controls">
@@ -30,6 +29,7 @@
       </div>
       <canvas id="canvas">
       </canvas>
+
       <div class="output">
         <img id="photo" alt="The screen capture will appear in this box.">
       </div>
@@ -150,7 +150,8 @@
                   for (var i = 0; i < totalImgCount; i++) {
                     fileCount = i + 1;
                     var imageObj = new Image();
-                    imageObj.src = '/img/' + imgType + '/' + fileCount + '.png';
+                    imageObj.src = 'img/' + imgType + '/' + fileCount + '.png';
+                    console.log(imageObj.src)
                     images.push(imageObj);
                   }
                   return images;
