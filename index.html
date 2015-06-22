@@ -151,10 +151,11 @@
 			  <div class="output">
 			    <img id="photo" alt="The screen capture will appear in this box.">
 			  </div>
+			  <a href="#" class="button" id="btn-download" download="my-file-name.png">Download</a>
 			<script>
 
 			var width = 400;
-			var height;
+			var height = 300;
 			var photo = document.getElementById('photo');;
 			var canvas = document.getElementById('canvas');
 			var vid = document.getElementById('videoel');
@@ -166,7 +167,7 @@
 				    if (width && height) {
 				      canvas.width = 400;
 				      canvas.height = 300;
-				      context.drawImage(vid, 0, 0, width, height);
+				      context.drawImage(vid, 0, 0, 400, 300);
 				    
 				      var data = canvas.toDataURL('image/png');
 				      photo.setAttribute('src', data);
@@ -183,7 +184,11 @@
 				    photo.setAttribute('src', data);
 				  }
 	
-				
+				var button = document.getElementById('btn-download');
+					button.addEventListener('click', function (e) {
+					    var dataURL = canvas.toDataURL('image/png');
+					    button.href = dataURL;
+				});
 				/********** check and set up video/webcam **********/
 
 				function enablestart() {
@@ -192,19 +197,6 @@
 					startbutton.disabled = null;
 				}
 				
-				/*var insertAltVideo = function(video) {
-					if (supports_video()) {
-						if (supports_ogg_theora_video()) {
-							video.src = "../media/cap12_edit.ogv";
-						} else if (supports_h264_baseline_video()) {
-							video.src = "../media/cap12_edit.mp4";
-						} else {
-							return false;
-						}
-						//video.play();
-						return true;
-					} else return false;
-				}*/
 				navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
 				window.URL = window.URL || window.webkitURL || window.msURL || window.mozURL;
 
